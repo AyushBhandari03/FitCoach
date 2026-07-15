@@ -1,0 +1,32 @@
+{
+  "baseline_fp32": {
+    "perplexity": 5.731133269032715,
+    "tokens_per_sec": 6.908571014435462,
+    "peak_ram_mb": 2263.29296875,
+    "model_size_mb": 0.0
+  },
+  "finetuned_fp32": {
+    "perplexity": 3.5179828381963256,
+    "tokens_per_sec": 7.096524569305879,
+    "peak_ram_mb": 2264.375,
+    "model_size_mb": 693.5113277435303
+  },
+  "gguf_f16": {
+    "perplexity": 2.981526433740504,
+    "tokens_per_sec": 17.470439951416203,
+    "peak_ram_mb": 1752.1328125,
+    "model_size_mb": 691.9418640136719
+  },
+  "gguf_q8_0": {
+    "perplexity": 3.142617508208265,
+    "tokens_per_sec": 23.881130327487686,
+    "peak_ram_mb": 1338.4453125,
+    "model_size_mb": 368.5043640136719
+  },
+  "gguf_q4_k_m": {
+    "perplexity": 3.3197218342717734,
+    "tokens_per_sec": 31.325997671444004,
+    "peak_ram_mb": 1290.015625,
+    "model_size_mb": 258.0551452636719
+  }
+}

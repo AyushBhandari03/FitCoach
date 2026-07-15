@@ -1,0 +1,15 @@
+# secrets
+.env
+
+# virtual environment
+.venv/
+
+# large model/binary files - too big for GitHub, regenerable from scripts
+merged_model/
+gguf_models/
+llama.cpp/
+llama_bin/
+
+# python cache
+__pycache__/
+*.pyc
