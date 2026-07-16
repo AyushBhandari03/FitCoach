@@ -1,8 +1,6 @@
 # FitCoach-Edge
 Distilling & Quantizing a Tiny LLM for On-Device Personalized Nutrition & Fitness Coaching
 
-Runs entirely on your laptop (AMD Ryzen 7, 16GB RAM, no NVIDIA GPU), 100% free, no cloud training.
-
 ## What this project does (maps to your assignment brief)
 
 | Brief requirement          | How we do it here                                                             |
@@ -13,10 +11,9 @@ Runs entirely on your laptop (AMD Ryzen 7, 16GB RAM, no NVIDIA GPU), 100% free, 
 | Benchmarking                 | Perplexity vs tokens/sec vs RAM footprint, plotted for fp16 vs Q8_0 vs Q4_K_M  |
 
 We use **GGUF quantization instead of bitsandbytes** because bitsandbytes 4-bit/8-bit requires an
-NVIDIA CUDA GPU, and your Radeon 780M is an AMD integrated GPU. GGUF is explicitly listed as an
+NVIDIA CUDA GPU,and not in CPU. GGUF is explicitly listed as an
 acceptable quantization format in your brief, and it's the standard free/local way to do this on
-CPU-only hardware — llama.cpp will even use your Radeon GPU automatically to speed up inference if
-you install the Vulkan build later (optional, not required).
+CPU-only hardware — llama.cpp .
 
 ## Project layout
 ```
