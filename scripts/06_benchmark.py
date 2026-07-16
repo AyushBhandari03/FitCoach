@@ -75,7 +75,7 @@ def load_val_examples(n):
     return examples
 
 
-# ------------------------- HF (transformers) benchmarking -------------------------
+# HF (transformers) benchmarking 
 def run_hf_variant(model_path: str):
     import torch
     from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -89,7 +89,7 @@ def run_hf_variant(model_path: str):
     model = AutoModelForCausalLM.from_pretrained(model_path, torch_dtype=torch.float32)
     model.eval()
 
-    # ---- perplexity on response tokens only ----
+    # perplexity on response tokens only
     examples = load_val_examples(NUM_PPL_EXAMPLES)
     total_nll, total_tokens = 0.0, 0
     with torch.no_grad():
@@ -119,7 +119,7 @@ def run_hf_variant(model_path: str):
             total_tokens += n_resp_tokens
     perplexity = math.exp(total_nll / total_tokens) if total_tokens else float("nan")
 
-    # ---- generation speed ----
+    # generation speed
     gen_msgs = [
         {"role": "system", "content": SYSTEM_MSG},
         {"role": "user", "content": GEN_PROMPT},
@@ -149,7 +149,7 @@ def run_hf_variant(model_path: str):
     }
 
 
-# ------------------------- GGUF (llama-cpp-python) benchmarking -------------------------
+# GGUF (llama-cpp-python) benchmarking
 def run_gguf_variant(gguf_path: str):
     from llama_cpp import Llama
     from transformers import AutoTokenizer
@@ -158,8 +158,6 @@ def run_gguf_variant(gguf_path: str):
     sampler.start()
 
     llm = Llama(model_path=gguf_path, n_ctx=1024, n_threads=os.cpu_count(), verbose=False, logits_all=True)
-    # Reuse the exact same chat template used during training/merging, loaded locally
-    # from the merged model folder (no download needed).
     hf_tok = AutoTokenizer.from_pretrained(str(MERGED_DIR))
 
     def build_prompt(instruction: str) -> str:
@@ -169,7 +167,6 @@ def run_gguf_variant(gguf_path: str):
         ]
         return hf_tok.apply_chat_template(msgs, tokenize=False, add_generation_prompt=True)
 
-    # ---- perplexity on response tokens only, via echoed logprobs ----
     examples = load_val_examples(NUM_PPL_EXAMPLES)
     total_nll, total_tokens = 0.0, 0
     for ex in examples:
@@ -185,8 +182,6 @@ def run_gguf_variant(gguf_path: str):
             prompt=full_text, max_tokens=0, echo=True, logprobs=1
         )
         token_logprobs = result["choices"][0]["logprobs"]["token_logprobs"]
-        # token_logprobs aligns with the echoed prompt's tokenization; take the tail
-        # portion corresponding to the response tokens.
         n_resp = len(full_tokens) - len(prompt_tokens)
         resp_logprobs = [lp for lp in token_logprobs[-n_resp:] if lp is not None]
         if not resp_logprobs:
@@ -195,7 +190,7 @@ def run_gguf_variant(gguf_path: str):
         total_tokens += len(resp_logprobs)
     perplexity = math.exp(total_nll / total_tokens) if total_tokens else float("nan")
 
-    # ---- generation speed ----
+    # generation speed
     gen_prompt = build_prompt(GEN_PROMPT)
     start = time.time()
     out = llm.create_completion(prompt=gen_prompt, max_tokens=GEN_NEW_TOKENS)
@@ -302,7 +297,7 @@ def make_plots(all_results: dict):
     mems = [all_results[v]["peak_ram_mb"] for v in variants]
     sizes = [all_results[v]["model_size_mb"] for v in variants]
 
-    # Plot 1: Perplexity vs Inference Latency (tokens/sec)
+    # 1. Perplexity vs Inference Latency (tokens/sec)
     fig, ax = plt.subplots(figsize=(7, 5))
     ax.scatter(speeds, perplexities, s=100)
     for v, x, y in zip(variants, speeds, perplexities):
@@ -315,7 +310,7 @@ def make_plots(all_results: dict):
     fig.savefig(RESULTS_DIR / "perplexity_vs_latency.png", dpi=150)
     plt.close(fig)
 
-    # Plot 2: Memory footprint (peak RAM and on-disk model size)
+    # 2. Memory footprint (peak RAM and on-disk model size)
     fig, ax = plt.subplots(figsize=(8, 5))
     x = range(len(variants))
     width = 0.35

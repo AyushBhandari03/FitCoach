@@ -1,11 +1,8 @@
 """
 Step 2: Merge Data Sources + Clean + Split
-
 Combines two sources into the final training pool:
   1. data/raw_dataset.jsonl    - freshly generated via Groq (Step 1, 01_generate_dataset.py)
-  2. data/colab_dataset.jsonl  - your existing personalized-nutrition dataset generated earlier
-                                  in Colab (shipped with this project, already cleaned of the
-                                  6 rows that had a broken/nested schema)
+  2. data/colab_dataset.jsonl  - old Dataset from various sources
 
 Both use the same {"instruction": ..., "response": ...} format. We merge, dedupe (case-insensitive
 on the instruction text), filter out junk/too-short examples, truncate extreme outlier-length
@@ -25,7 +22,7 @@ VAL_PATH = DATA_DIR / "val.jsonl"
 
 MIN_INSTRUCTION_LEN = 8
 MIN_RESPONSE_LEN = 15
-MAX_RESPONSE_LEN = 1200  # chars, keep examples reasonable for a 360M model on CPU
+MAX_RESPONSE_LEN = 1200
 VAL_FRACTION = 0.1
 SEED = 42
 
@@ -46,7 +43,7 @@ def load_source(path: Path):
             instr = obj.get("instruction", "")
             resp = obj.get("response", "")
             if not isinstance(instr, str) or not isinstance(resp, str):
-                continue  # skip any broken/nested-schema rows defensively
+                continue  
             instr, resp = instr.strip(), resp.strip()
             if len(instr) < MIN_INSTRUCTION_LEN or len(resp) < MIN_RESPONSE_LEN:
                 continue

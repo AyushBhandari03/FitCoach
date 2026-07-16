@@ -1,8 +1,7 @@
 """
 Step 3: Distillation/Fine-Tuning
 LoRA fine-tunes a small student model (SmolLM2-360M-Instruct) on the synthetic
-nutrition & fitness dataset, on CPU. Uses PEFT (LoRA), not QLoRA/bitsandbytes,
-since there's no CUDA GPU available on this machine.
+nutrition & fitness dataset, on CPU. Uses PEFT (LoRA).
 """
 import json
 from pathlib import Path
@@ -18,9 +17,8 @@ from transformers import (
 )
 from peft import LoraConfig, get_peft_model, TaskType
 
-# ---------------------- Config (tune these if training feels too slow) ----------------------
 BASE_MODEL = "HuggingFaceTB/SmolLM2-360M-Instruct"
-MAX_TRAIN_EXAMPLES = None   # e.g. set to 300 to train on a subset and go faster
+MAX_TRAIN_EXAMPLES = None
 NUM_EPOCHS = 3
 LEARNING_RATE = 2e-4
 MAX_LENGTH = 512

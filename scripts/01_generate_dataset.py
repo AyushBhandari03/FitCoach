@@ -2,7 +2,6 @@
 Step 1: Data Curation
 Generates a synthetic, high-quality nutrition & fitness Q&A dataset using
 Groq's free Llama-3.1-8B API as the "teacher" model.
-
 Output: data/raw_dataset.jsonl  (one {"instruction": ..., "response": ...} per line)
 """
 import os
@@ -17,12 +16,11 @@ from groq import Groq
 
 load_dotenv()
 
-# ---------------------- Config ----------------------
-TEACHER_MODEL = "llama-3.1-8b-instant"   # fast + free on Groq
-NUM_BATCHES = 80                          # ~10 Q&A pairs per batch -> ~800 examples
+TEACHER_MODEL = "llama-3.1-8b-instant"
+NUM_BATCHES = 80
 PAIRS_PER_BATCH = 10
 OUTPUT_PATH = Path(__file__).resolve().parent.parent / "data" / "raw_dataset.jsonl"
-TEMPERATURE = 0.9  # higher temp -> more diverse questions across batches
+TEMPERATURE = 0.9  # higher temp = more diverse questions across batches
 
 TOPICS = [
     "macronutrients and calorie counting",
@@ -130,7 +128,7 @@ def main():
             print(f"[batch {i+1}/{NUM_BATCHES}] topic='{topic}' +{new_in_batch} "
                   f"(total so far: {written})")
 
-            time.sleep(0.5)  # be a little gentle on the free rate limit
+            time.sleep(0.5)
 
     print(f"\nDone. Wrote {written} unique Q&A pairs to {OUTPUT_PATH}")
 
