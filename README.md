@@ -1,7 +1,7 @@
 # FitCoach-Edge
 Distilling & Quantizing a Tiny LLM for On-Device Personalized Nutrition & Fitness Coaching
 
-## What this project does (maps to your assignment brief)
+## What this project does :
 
 | Brief requirement          | How we do it here                                                             |
 |-----------------------------|--------------------------------------------------------------------------------|
